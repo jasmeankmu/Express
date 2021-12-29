@@ -260,26 +260,166 @@ delete from tmpschema."CITY" where name = '111';
     -- 그럼 name을 기준으로 컬럼을 찾고 삭제 해주면 됩니다!
 ```
 
+## 7번 GROUP BY
+
+- 이제 그룹 별로 묶어 보는걸 해보겠습니다!
+
+- 그룹으로 묶기위해서 일단 자료들을 넣어줘야 겠네요
+
+```sql
+insert into tmpschema."CITY"(name, countrycode, district, population)
+VALUES('busan','15','anyting',21);
+
+
+insert into tmpschema."CITY"(name, countrycode, district, population)
+VALUES('busan','15','anyting',22);
+```
+
+- 이제 `CITY` 테이블에서
+
+```sql
+select  name,countrycode from tmpschema."CITY" group by name,countrycode;
+
+  -- 도시 이름과 코드를 통해 묶어보았습니다.
+```
+
+> Group by에서 주의해야 할점은 데이터를 그룹화 하는 조건의 내용을 select에 적어줘야합니다
+
 ## 6번 ORDER BY (ASC,DESC)
 
-## 7번 GROUP BY
+- 이번엔 오름차순 내림차순으로 정렬을 해보겠습니다.
+
+```sql
+select * from tmpschema."CITY" order by  population ;
+  -- 오름차순으로 정렬
+
+select * from tmpschema."CITY" order by  population desc;
+  -- 내림차순으로 정렬
+```
 
 ## 8번 DISTINCT
 
-## 9번 LIMIT,FETCH
+- DISTINCT는 중복된 자료를 제거하는 문법입니다.
+
+```sql
+insert into tmpschema."CITY"(name, countrycode, district, population)
+VALUES('111','11','anyting',22);
+```
+
+<p align="center"><img src=".\IMG\5.png"></p>
+
+- 위의 insert문을 두번 입력해서 옆과 같은 테이블을 만들었다고 가정하겠습니다.
+
+- 만약 여기서 `select name from tmpschema."CITY"`를 입력하면 대구,부산,111이 여러개로 나오겠죠
+
+- 이걸 간단하게 대구,부산,111 3가지로 중복을 제거 하고 싶을떄 `DISTINCT`를 사용합니다.
+
+```sql
+select distinct name from tmpschema."CITY";
+  --이름이 중복인 컬럼 제외
+
+select distinct * from tmpschema."CITY";
+  -- 완전히 중복인 내용 제외 여기서는 ID가 모두 다르기 때문에 의미가 없습니다.
+
+select distinct on(name) * from tmpschema."CITY" ;
+  -- 그래서 distinct on을 통해 이름기준으로 중복인 열을 묶을수도 있습니다.
+```
+
+## 9번 LIMIT,OFFSET, Fetch
+
+- 위에서는 중복되는 열을 줄여 봤는데 만약 테이블에 1억개의 결과물이 있어서 이걸 불러온다면 오래걸리겠죠?
+
+- 그래서 이것을 제한하는 LIMIT이 있습니다.
+
+```sql
+select  * from tmpschema."CITY" LIMIT 2;
+
+  -- 해당 LIMIT 옆에 숫자를 넣어줘서 양을 줄일수가 있습니다.
+```
+
+- 그런데 이렇게하면 가끔씩 예상치 못한 테이블의 배열을 보게될겁니다!
+
+```sql
+select  * from tmpschema."CITY"  order by id limit 1 offset 3;
+```
+
+- 그 이유는 id 기준으로 orderby 를 하지 않아 아래 테이블에서 몇개를 가져오기 때문이죠
+
+<p align="center"><img src=".\IMG\6.png"></p>
+
+```sql
+select  * from tmpschema."CITY"  order by id limit 1 offset 3;
+  -- 그렇기 때문에 order by id 기준으로 limit를 먹여봤습니다
+```
+
+- 그럼 `id`가 3이후로 2개를 출력하고 싶을때 어떻게 하죠? (그럴땐 Offset을 사용합니다)
+
+```sql
+select  * from tmpschema."CITY"  order by id limit 2 offset 3;
+  -- id순으로 정렬한 다음 3에서 부터 2개 출력
+```
+
+- 또한 비슷한 친구로 `fetch`라는 친구가 있습니다
+
+- LIMIT와 마찬가지로 조회한 결과의 개수를 제한하는 역할을 합니다.(postgresql 에서는 Limit과 Fetch를 동시지원)
+
+```sql
+select  * from tmpschema."CITY"  order by id  Fetch first 1 Row ONLY offset 3;
+  -- Limit과 같은역할을 합니다
+```
 
 ## 10번 IN
 
-## 11번 BETWEEN
+- 특정 집합(컬럼 혹은 리스트)에서 존재하는지를 판단하는 연산자입니다.
+
+- 만약 여러분이 부산이랑 111이 있는 컬럼의 id를 찾고 싶을떄는 어떻게 해야할까요?
+
+```sql
+select  * from tmpschema."CITY" where name in ('busan','111') order by  id;
+  -- 해당 in을 사용하여 busan 과 111을 찾아냄
+```
+
+## 11번 and(Between)
+
+- and를 연산과 비슷한 Between도 존재합니다.
+
+```sql
+select * from tmpschema."CITY" where population >= 20 and population <= 21
+
+select * from tmpschema."CITY" where population between 20 and 21 ;
+```
 
 ## 12번 LIKE
 
-## 13번 View
+- 어떤 컬럼의 값이 특정 값과 유사한 패턴을 갖는 값을 모을때 사용
 
-## 14번 JOIN
-
-## 15번 UNION
-
+```sql
+select * from tmpschema."CITY" where name like 'bu___' ;select
+  -- 5글자에 bu로 시작하는 단어는 부산!
 ```
 
+- `like`의 패턴은 아래와 같습니다
+
+```sql
+select
+'foo' like 'foo', --true
+'foo' like 'f%', --f로 시작하기 때문에 true
+'foo' like '_o_', -- 3자리이며 2번째 자리가 o true
+'bar' like 'b_' -- 2자리이며 첫번쨰 자리가 b false
+```
+
+## 13번 JOIN
+
+- 도시 테이블 하고 도시가 가진 맛집이 있다고 가정하면 두가지의 테이블을 합쳐야합니다.
+
+- 이럴경우 `JOIN`이라는 것을 사용해야합니다
+
+- 조인의 종류는 아래와 가이 다양하게 있습니다.
+
+<p align="center"><img src=".\IMG\7.png"></p>
+
+```sql
+select * from tmpschema."Cookhouse" as Cook JOIN tmpschema."CITY" as City ON Cook.cityname = City.name;
+
+  -- Cook City Join
 ```
