@@ -423,3 +423,5 @@ select * from tmpschema."Cookhouse" as Cook JOIN tmpschema."CITY" as City ON Coo
 
   -- Cook City Join
 ```
+
+<p align="center"><img src=".\IMG\8.png"></p>
