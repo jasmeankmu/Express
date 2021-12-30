@@ -2,6 +2,8 @@
 
 ## 숙제
 
+<p align="center"><img src="./img/HomeWork.png"></p>
+
 - `pgsql-express` 폴더는 `postgresql` 과 `express`를 연결한 서버 폴더이다.
 
 - 숙제 1: 해당 폴더의 구조를 이해하고, ./router의 있는 `user`의 crud를 완성해보자 (또한 전체 코드의 구조를 이해해야합니다)
@@ -20,4 +22,4 @@
     - [Promise3](https://www.youtube.com/watch?v=e9f1TyIlAzs)
     - [async/await](https://www.youtube.com/watch?v=G-tHfpfeFGQ)
 
-- 숙제 3: 전체코드를 본인의 스타일로 바꾸고 업그레이드시켜보자! 
+- 숙제 3: 전체코드를 본인의 스타일로 바꾸고 업그레이드시켜보자!
